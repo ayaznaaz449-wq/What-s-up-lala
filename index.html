@@ -42,12 +42,13 @@ input.f{width:100%;background:#1b1b1b;border:0;color:#f2f2f2;padding:12px;border
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-// ===== FINAL FIXED - Teri API Key lag gayi hai =====
-const CFG={apiKey:"AIzaSyBOoeLnJ1ipzWc_manoYXi4WphYU2FB2Y",authDomain:"lala-chatbox-shah.firebaseapp.com",projectId:"lala-chatbox-shah",storageBucket:"lala-chatbox-shah.firebasestorage.app",messagingSenderId:"187582685955",appId:"1:187582685955:web:7686f4bbcb232277237f36",measurementId:"G-TQMJRZMGDS"};
+// ===== paste your Firebase web-app config here =====
+const CFG={apiKey:"AIzaSyBOoelnTJI1pzWc_manoYxi4WphYU2fB2Y",authDomain:"lala-chatbox-shah.firebaseapp.com",projectId:"lala-chatbox-shah",appId:"1:187582685955:web:7686f4bbcb232277237f36"};
 firebase.initializeApp(CFG);
 const auth=firebase.auth(),db=firebase.firestore();
 const $=s=>document.querySelector(s),app=$('#app');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Local-only settings (this phone): vault chats, per-chat PINs, app PIN, wallpapers, seen markers
 let L={vault:[],locks:{},appPin:'',crash:1,wp:{},seen:{}};
 try{Object.assign(L,JSON.parse(localStorage.getItem('lala')||'{}'))}catch(e){}
 const sv=()=>{try{localStorage.setItem('lala',JSON.stringify(L))}catch(e){}};
@@ -56,17 +57,23 @@ const cid=(a,b)=>[a,b].sort().join('_');
 const usr=async id=>UC[id]||(UC[id]=(await db.collection('users').doc(id).get()).data()||{name:'User'});
 const unsubs=()=>{subs.forEach(f=>f());subs=[];csubs.forEach(f=>f());csubs=[]};
 setTimeout(()=>{$('#splash').style.opacity=0;setTimeout(()=>$('#splash').remove(),600)},2300);
+
 function sheet(title,items){const d=document.createElement('div');d.className='sh';
   d.innerHTML=`<div><h3>${esc(title)}</h3>${items.map((x,i)=>`<p data-i="${i}">${x[0]}</p>`).join('')}</div>`;
   d.onclick=e=>{if(e.target==d)d.remove();const p=e.target.closest('p');if(p){d.remove();items[p.dataset.i][1]()}};document.body.append(d)}
 function lp(el,fn){let t;el.addEventListener('pointerdown',()=>{el._l=0;t=setTimeout(()=>{el._l=1;fn()},520)});['pointerup','pointerleave','pointercancel'].forEach(v=>el.addEventListener(v,()=>clearTimeout(t)))}
+
+// ---- Presence (respects Hide online / Freeze last seen) ----
 function pres(on){if(!U||!P||P.hideOnline)return;const d={online:on};if(!on&&!P.freezeSeen)d.lastSeen=Date.now();ref.set(d,{merge:true}).catch(()=>{})}
 document.addEventListener('visibilitychange',()=>pres(!document.hidden));addEventListener('pagehide',()=>pres(false));
+
 auth.onAuthStateChanged(async u=>{U=u;unsubs();
   if(!u)return loginView();
   ref=db.collection('users').doc(u.uid);let s=await ref.get();
   if(!s.exists){const fk=(u.email||'').endsWith('@lala.app'),ph=fk?'+'+u.email.split('@')[0]:'';await ref.set({name:pendingName||ph||'Lala User',email:fk?'':(u.email||''),phone:ph});s=await ref.get()}
   P=s.data();pres(true);L.appPin?lockView():home()});
+
+// Free login: phone number + password (no SMS). The number is stored as a hidden email <digits>@lala.app
 function norm(p){p=p.replace(/[\s-]/g,'');if(p[0]=='0')return '+92'+p.slice(1);if(/^92/.test(p))return '+'+p;return p}
 function loginView(){
   app.innerHTML=`<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px"><h2 style="text-align:center">What’s Up Lala</h2><p style="text-align:center;color:#8a8a8a;margin-top:6px">Login with your phone number</p><input class="f" id="nm" placeholder="Name (new account only)"><input class="f" id="ph" type="tel" placeholder="03XX XXXXXXX"><input class="f" id="pw" type="password" placeholder="Password (min 6)"><button class="btn" id="li">Login</button><button class="btn" id="su" style="background:#1b1b1b;color:#fff">Create account</button></div><div class="cr">Designed and developed by Shahwaiz Hassan Daheri</div>`;
@@ -74,8 +81,12 @@ function loginView(){
     pendingName=n?$('#nm').value.trim():'';
     try{await auth[f](d+'@lala.app',$('#pw').value)}catch(e){alert(e.code=='auth/email-already-in-use'?'This number is already registered. Use Login.':(e.code=='auth/invalid-credential'||e.code=='auth/wrong-password'||e.code=='auth/user-not-found')?'Wrong number or password':e.message)}};
   $('#li').onclick=go('signInWithEmailAndPassword');$('#su').onclick=go('createUserWithEmailAndPassword',1)}
+
+// ---- App lock with fake crash ----
 function lockView(){app.innerHTML=`<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:30px;text-align:center"><h2>🔒 App Lock</h2><input class="f" id="ap" type="password" inputmode="numeric" placeholder="PIN"><button class="btn" id="ub">Unlock</button></div>`;
   $('#ub').onclick=()=>{if($('#ap').value==L.appPin)home();else if(L.crash)$('#crash').style.display='grid';else alert('Wrong PIN')}}
+
+// ---- Home ----
 function home(){unsubs();const T=['Chats','Status','Calls','Communities'];
   app.innerHTML=`<header><span class="t">${inVault?'🔒 Vault':'What’s Up Lala'}</span><b id="sr">🔍</b><b id="mn">⋮</b></header><div class="tabs">${T.map((t,i)=>`<div data-i="${i}" class="${i==tab?'on':''}">${t}</div>`).join('')}</div><div class="list" id="ls"></div><button class="fab" id="fb">💬</button><div class="cr">Designed and developed by Shahwaiz Hassan Daheri</div>`;
   document.querySelectorAll('.tabs div').forEach(d=>d.onclick=()=>{tab=+d.dataset.i;home()});
@@ -96,6 +107,8 @@ function list(){const el=$('#ls');if(!el)return;
 async function newChat(){const v=(prompt('Friend’s phone number (or email)')||'').trim().toLowerCase();if(!v)return;
   const s=await db.collection('users').where(v.includes('@')?'email':'phone','==',v.includes('@')?v:norm(v)).get();if(s.empty)return alert('User not on Lala yet');
   const id=s.docs[0].id;if(id==U.uid)return alert('That is you');UC[id]=s.docs[0].data();chat(cid(U.uid,id))}
+
+// ---- Chat ----
 async function chat(id){unsubs();const o=id.split('_').find(x=>x!=U.uid),od=await usr(o),cr=db.collection('chats').doc(id),mr=cr.collection('messages');
   L.seen[id]=Date.now();sv();let tt;
   app.innerHTML=`<header><b id="bk">←</b><div class="av" style="width:38px;height:38px;font-size:16px">${esc((od.name||'?')[0].toUpperCase())}</div><span class="t" style="font-size:16px">${esc(od.name)}<small id="sub"></small></span><b id="cm">⋮</b></header><div class="msgs" id="ms" style="background:${L.wp[id]||'#000'}"></div><div class="bar"><div class="in"><span id="em">😊</span><input id="mi" placeholder="Message"><span id="at">📎</span></div><button class="go" id="sd">➤</button></div><input type="file" id="fi" accept="image/*" hidden>`;
@@ -116,6 +129,8 @@ function wp(id,v){L.wp[id]=v;sv();$('#ms').style.background=v}
 function paint(docs){const m=$('#ms');if(!m)return;m.innerHTML=docs.map(d=>{const x=d.data(),me=x.from==U.uid;let t=esc(x.text||'');const keep=!x.deleted||(!me&&P.antiDelete);
   if(x.deleted)t=keep?'🚫 Deleted: '+t:'🚫 This message was deleted';
   return `<div class="b ${me?'o':'i'}" data-id="${d.id}" data-me="${me?1:0}">${x.img&&keep?`<img src="${esc(x.img)}">`:''}${t}<small>${new Date(x.ts).toTimeString().slice(0,5)}${me?` <span class="${x.status==3?'bl':''}">${x.status==1?'✓':'✓✓'}</span>`:''}</small></div>`}).join('');m.scrollTop=1e9}
+
+// ---- Settings ----
 const TG=[['hideOnline','Hide online'],['freezeSeen','Freeze last seen'],['hideTyping','Hide typing…'],['hideBlue','Hide blue ticks'],['antiDelete','Anti-delete messages']];
 function settings(){unsubs();app.innerHTML=`<header><b id="bk">←</b><span class="t">Settings</span></header><div class="list"><div class="sec">Privacy</div>${TG.map(t=>`<div class="opt" data-k="${t[0]}"><span>${t[1]}</span><div class="sw ${P[t[0]]?'on':''}"></div></div>`).join('')}<div class="sec">Security (this phone)</div><div class="opt" id="ap"><span>App Lock PIN</span><span style="color:#8a8a8a">${L.appPin?'On':'Off'}</span></div><div class="opt" id="fc"><span>Fake crash on wrong PIN</span><div class="sw ${L.crash?'on':''}"></div></div><div class="sec">Account</div><div class="opt" id="lo"><span>Logout (${esc(P.phone||U.email)})</span></div><p style="padding:20px;color:#666;text-align:center;font-size:12px">Designed and developed by Shahwaiz Hassan Daheri</p></div>`;
   $('#bk').onclick=home;
