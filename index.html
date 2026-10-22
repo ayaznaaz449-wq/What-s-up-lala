@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#000000">
+<title>What's Up Lala</title>
+<style>
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#000;color:#f2f2f2;font-family:system-ui,sans-serif;font-size:15px}
+#app{max-width:480px;height:100%;margin:auto;display:flex;flex-direction:column;position:relative}
+header{display:flex;align-items:center;gap:14px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 12px;font-size:20px;font-weight:600}
+header .t{flex:1;min-width:0}header small{display:block;font-size:12px;color:#25d366;font-weight:400}header b{font-weight:400;cursor:pointer}
+.tabs{display:flex;border-bottom:1px solid #222}.tabs div{flex:1;text-align:center;padding:11px 0;color:#8a8a8a;font-weight:600;font-size:13px;border-bottom:3px solid transparent}.tabs .on{color:#25d366;border-color:#25d366}
+.list{flex:1;overflow:auto}.row{display:flex;gap:12px;padding:10px 14px;align-items:center;user-select:none;-webkit-user-select:none}.row:active{background:#111}
+.av{width:48px;height:48px;border-radius:50%;background:#2a2a2a;display:grid;place-items:center;font-size:20px;font-weight:700;flex:none}
+.m{flex:1;min-width:0}.n{font-weight:600}.s{color:#8a8a8a;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dot{width:10px;height:10px;border-radius:50%;background:#25d366}
+.fab{position:absolute;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:54px;height:54px;border-radius:16px;background:#25d366;color:#000;border:0;font-size:22px}
+.msgs{flex:1;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:4px}
+.b{max-width:80%;padding:6px 9px;border-radius:9px;white-space:pre-wrap;word-break:break-word;user-select:none;-webkit-user-select:none}
+.b.o{align-self:flex-end;background:#0b3d2e}.b.i{align-self:flex-start;background:#1c1c1c}.b img{max-width:100%;border-radius:6px;display:block;margin-bottom:4px}
+.b small{display:block;text-align:right;font-size:10px;color:#8a8a8a;margin-top:2px}.bl{color:#34b7f1}
+.bar{display:flex;gap:6px;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));align-items:center}
+.bar .in{flex:1;display:flex;align-items:center;gap:8px;background:#121212;border-radius:24px;padding:2px 12px}
+.bar input{flex:1;background:0;border:0;color:#f2f2f2;padding:10px 0;font-size:16px;outline:0}.bar span{font-size:19px;cursor:pointer}
+.go{width:44px;height:44px;border-radius:50%;background:#25d366;color:#000;border:0;font-size:18px}
+input.f{width:100%;background:#1b1b1b;border:0;color:#f2f2f2;padding:12px;border-radius:10px;font-size:16px;margin-top:10px}
+.btn{width:100%;background:#25d366;color:#000;border:0;border-radius:22px;padding:12px;font-weight:700;font-size:16px;margin-top:12px}
+.sh{position:fixed;inset:0;background:#000a;display:flex;align-items:flex-end;justify-content:center;z-index:30}
+.sh>div{background:#161616;width:100%;max-width:480px;border-radius:18px 18px 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));max-height:70%;overflow:auto}
+.sh h3{margin-bottom:6px}.sh p{padding:13px 4px;border-bottom:1px solid #222}.sec{color:#25d366;font-size:12px;font-weight:700;padding:14px 14px 4px;text-transform:uppercase}
+.sw{width:42px;height:24px;border-radius:12px;background:#444;position:relative;flex:none}.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#bbb;transition:.2s}.sw.on{background:#25d366}.sw.on::after{left:21px;background:#fff}
+.opt{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;border-bottom:1px solid #1a1a1a}
+.cr{text-align:center;font-size:11px;color:#666;padding:6px 0 calc(8px + env(safe-area-inset-bottom,0px))}
+#splash{position:fixed;inset:0;background:#000;display:grid;place-items:center;z-index:99;text-align:center;transition:opacity .6s}
+#splash svg{animation:pop 1.3s ease-out both}#splash h1{margin-top:14px;font-size:26px;animation:fd 1.5s .3s both}
+@keyframes pop{from{transform:scale(.2) rotate(-40deg);opacity:0}to{transform:none;opacity:1}}@keyframes fd{from{opacity:0;transform:translateY(12px)}}
+#crash{position:fixed;inset:0;background:#000;z-index:98;display:none;place-items:center}#crash div{background:#2b2b2b;border-radius:14px;padding:22px;width:80%;text-align:center}
+#crash button{margin-top:16px;background:0;border:0;color:#8ab4f8;font-weight:700;font-size:15px}
+</style></head><body>
+<div id="app"></div>
+<div id="crash"><div><p style="font-size:17px;margin-bottom:6px">Whats Up Lala has stopped</p><p style="color:#aaa;font-size:13px">Close app / Report</p><button onclick="location.reload()">Open app again</button></div></div>
+<div id="splash"><div><svg width="140" height="140" viewBox="0 0 100 100"><path d="M50 6a43 43 0 0 0-37 65L7 94l24-6A43 43 0 1 0 50 6z" fill="#111" stroke="#fff" stroke-width="3"/><path d="M34 27c-3 1-6 5-5 11 2 11 14 25 27 30 6 2 11-1 12-5l1-4-9-5-4 3c-4-1-12-8-14-13l3-4-4-10z" fill="#fff"/></svg><h1>What’s Up Lala</h1></div></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+// ===== paste your Firebase web-app config here =====
+const CFG={apiKey:"PASTE",authDomain:"PASTE",projectId:"PASTE",appId:"PASTE"};
+firebase.initializeApp(CFG);
+const auth=firebase.auth(),db=firebase.firestore();
+const $=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Local-only settings (this phone): vault chats, per-chat PINs, app PIN, wallpapers, seen markers
+let L={vault:[],locks:{},appPin:'',crash:1,wp:{},seen:{}};
+try{Object.assign(L,JSON.parse(localStorage.getItem('lala')||'{}'))}catch(e){}
+const sv=()=>{try{localStorage.setItem('lala',JSON.stringify(L))}catch(e){}};
+let U,P,ref,CH=[],tab=0,inVault=false,q='',subs=[],csubs=[],UC={},pendingName='';
+const cid=(a,b)=>[a,b].sort().join('_');
+const usr=async id=>UC[id]||(UC[id]=(await db.collection('users').doc(id).get()).data()||{name:'User'});
+const unsubs=()=>{subs.forEach(f=>f());subs=[];csubs.forEach(f=>f());csubs=[]};
+setTimeout(()=>{$('#splash').style.opacity=0;setTimeout(()=>$('#splash').remove(),600)},2300);
+
+function sheet(title,items){const d=document.createElement('div');d.className='sh';
+  d.innerHTML=`<div><h3>${esc(title)}</h3>${items.map((x,i)=>`<p data-i="${i}">${x[0]}</p>`).join('')}</div>`;
+  d.onclick=e=>{if(e.target==d)d.remove();const p=e.target.closest('p');if(p){d.remove();items[p.dataset.i][1]()}};document.body.append(d)}
+function lp(el,fn){let t;el.addEventListener('pointerdown',()=>{el._l=0;t=setTimeout(()=>{el._l=1;fn()},520)});['pointerup','pointerleave','pointercancel'].forEach(v=>el.addEventListener(v,()=>clearTimeout(t)))}
+
+// ---- Presence (respects Hide online / Freeze last seen) ----
+function pres(on){if(!U||!P||P.hideOnline)return;const d={online:on};if(!on&&!P.freezeSeen)d.lastSeen=Date.now();ref.set(d,{merge:true}).catch(()=>{})}
+document.addEventListener('visibilitychange',()=>pres(!document.hidden));addEventListener('pagehide',()=>pres(false));
+
+auth.onAuthStateChanged(async u=>{U=u;unsubs();
+  if(!u)return loginView();
+  ref=db.collection('users').doc(u.uid);let s=await ref.get();
+  if(!s.exists){const fk=(u.email||'').endsWith('@lala.app'),ph=fk?'+'+u.email.split('@')[0]:'';await ref.set({name:pendingName||ph||'Lala User',email:fk?'':(u.email||''),phone:ph});s=await ref.get()}
+  P=s.data();pres(true);L.appPin?lockView():home()});
+
+// Free login: phone number + password (no SMS). The number is stored as a hidden email <digits>@lala.app
+function norm(p){p=p.replace(/[\s-]/g,'');if(p[0]=='0')return '+92'+p.slice(1);if(/^92/.test(p))return '+'+p;return p}
+function loginView(){
+  app.innerHTML=`<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px"><h2 style="text-align:center">What’s Up Lala</h2><p style="text-align:center;color:#8a8a8a;margin-top:6px">Login with your phone number</p><input class="f" id="nm" placeholder="Name (new account only)"><input class="f" id="ph" type="tel" placeholder="03XX XXXXXXX"><input class="f" id="pw" type="password" placeholder="Password (min 6)"><button class="btn" id="li">Login</button><button class="btn" id="su" style="background:#1b1b1b;color:#fff">Create account</button></div><div class="cr">Designed and developed by Shahwaiz Hassan Daheri</div>`;
+  const go=(f,n)=>async()=>{const d=norm($('#ph').value).replace(/\D/g,'');if(d.length<10)return alert('Enter a valid phone number');
+    pendingName=n?$('#nm').value.trim():'';
+    try{await auth[f](d+'@lala.app',$('#pw').value)}catch(e){alert(e.code=='auth/email-already-in-use'?'This number is already registered. Use Login.':(e.code=='auth/invalid-credential'||e.code=='auth/wrong-password'||e.code=='auth/user-not-found')?'Wrong number or password':e.message)}};
+  $('#li').onclick=go('signInWithEmailAndPassword');$('#su').onclick=go('createUserWithEmailAndPassword',1)}
+
+// ---- App lock with fake crash ----
+function lockView(){app.innerHTML=`<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:30px;text-align:center"><h2>🔒 App Lock</h2><input class="f" id="ap" type="password" inputmode="numeric" placeholder="PIN"><button class="btn" id="ub">Unlock</button></div>`;
+  $('#ub').onclick=()=>{if($('#ap').value==L.appPin)home();else if(L.crash)$('#crash').style.display='grid';else alert('Wrong PIN')}}
+
+// ---- Home ----
+function home(){unsubs();const T=['Chats','Status','Calls','Communities'];
+  app.innerHTML=`<header><span class="t">${inVault?'🔒 Vault':'What’s Up Lala'}</span><b id="sr">🔍</b><b id="mn">⋮</b></header><div class="tabs">${T.map((t,i)=>`<div data-i="${i}" class="${i==tab?'on':''}">${t}</div>`).join('')}</div><div class="list" id="ls"></div><button class="fab" id="fb">💬</button><div class="cr">Designed and developed by Shahwaiz Hassan Daheri</div>`;
+  document.querySelectorAll('.tabs div').forEach(d=>d.onclick=()=>{tab=+d.dataset.i;home()});
+  $('#sr').onclick=()=>{q=(prompt('Search chats')||'').toLowerCase();list()};
+  $('#mn').onclick=()=>sheet('Menu',[[inVault?'⬅ Leave Vault':'🔐 Vault (code 786)',vault],['⚙️ Settings',settings]]);
+  $('#fb').onclick=newChat;
+  subs.push(db.collection('chats').where('participants','array-contains',U.uid).onSnapshot(s=>{CH=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.lastTs-a.lastTs);CH.forEach(deliver);list()}));}
+function deliver(c){if(c.lastFrom&&c.lastFrom!=U.uid&&c.lastSt<2)db.collection('chats').doc(c.id).collection('messages').where('from','==',c.lastFrom).where('status','==',1).get().then(s=>{s.forEach(d=>d.ref.update({status:2}));db.collection('chats').doc(c.id).update({lastSt:2})}).catch(()=>{})}
+function vault(){if(inVault){inVault=false;return home()}if(prompt('Vault code')=='786'){inVault=true;home()}else alert('Wrong code')}
+function list(){const el=$('#ls');if(!el)return;
+  if(tab){el.innerHTML=`<p style="padding:30px;text-align:center;color:#8a8a8a">${['','Status','Calls (WebRTC)','Communities'][tab]} — coming in the next update</p>`;return}
+  const a=CH.filter(c=>inVault==L.vault.includes(c.id));
+  el.innerHTML=a.map(c=>`<div class="row" data-id="${c.id}"><div class="av" id="a${c.id}">…</div><div class="m"><div class="n" id="n${c.id}">…</div><div class="s">${L.locks[c.id]?'🔒 Locked chat':esc(c.last||'')}</div></div>${c.lastFrom!=U.uid&&c.lastTs>(L.seen[c.id]||0)?'<div class="dot"></div>':''}</div>`).join('')||'<p style="padding:30px;text-align:center;color:#8a8a8a">No chats. Tap 💬 to start.</p>';
+  a.forEach(c=>{const o=c.id.split('_').find(x=>x!=U.uid);usr(o).then(u=>{const n=$('#n'+c.id);if(!n)return;n.textContent=(L.locks[c.id]?'🔒 ':'')+u.name;$('#a'+c.id).textContent=(u.name||'?')[0].toUpperCase();
+    if(q&&!u.name.toLowerCase().includes(q))n.closest('.row').style.display='none'})});
+  el.querySelectorAll('.row').forEach(r=>{const id=r.dataset.id;lp(r,()=>sheet('Chat',[[inVault?'👁 Remove from Vault':'🙈 Hide in Vault',()=>{inVault?L.vault=L.vault.filter(x=>x!=id):L.vault.push(id);sv();list()}],[L.locks[id]?'🔓 Remove chat PIN':'🔒 Lock chat (own PIN)',()=>{if(L.locks[id]){delete L.locks[id]}else{const p=prompt('Set PIN for this chat');if(p)L.locks[id]=p}sv();list()}]]));
+    r.onclick=()=>{if(r._l)return;if(L.locks[id]&&prompt('Chat PIN')!=L.locks[id])return;chat(id)}})}
+async function newChat(){const v=(prompt('Friend’s phone number (or email)')||'').trim().toLowerCase();if(!v)return;
+  const s=await db.collection('users').where(v.includes('@')?'email':'phone','==',v.includes('@')?v:norm(v)).get();if(s.empty)return alert('User not on Lala yet');
+  const id=s.docs[0].id;if(id==U.uid)return alert('That is you');UC[id]=s.docs[0].data();chat(cid(U.uid,id))}
+
+// ---- Chat ----
+async function chat(id){unsubs();const o=id.split('_').find(x=>x!=U.uid),od=await usr(o),cr=db.collection('chats').doc(id),mr=cr.collection('messages');
+  L.seen[id]=Date.now();sv();let tt;
+  app.innerHTML=`<header><b id="bk">←</b><div class="av" style="width:38px;height:38px;font-size:16px">${esc((od.name||'?')[0].toUpperCase())}</div><span class="t" style="font-size:16px">${esc(od.name)}<small id="sub"></small></span><b id="cm">⋮</b></header><div class="msgs" id="ms" style="background:${L.wp[id]||'#000'}"></div><div class="bar"><div class="in"><span id="em">😊</span><input id="mi" placeholder="Message"><span id="at">📎</span></div><button class="go" id="sd">➤</button></div><input type="file" id="fi" accept="image/*" hidden>`;
+  let typ=false,on=false;const sub=()=>{$('#sub')&&($('#sub').textContent=typ?'typing...':on?'online':'')};
+  csubs.push(cr.onSnapshot(d=>{typ=!!(d.data()||{})['typing_'+o];sub()}),db.collection('users').doc(o).onSnapshot(d=>{const x=d.data()||{};on=x.online&&!x.hideOnline;sub()}));
+  csubs.push(mr.orderBy('ts').onSnapshot(s=>{paint(s.docs);const t=P.hideBlue?2:3;s.docs.forEach(d=>{const x=d.data();if(x.from!=U.uid&&x.status<t)d.ref.update({status:t})})}));
+  $('#bk').onclick=()=>{cr.set({['typing_'+U.uid]:false},{merge:true}).catch(()=>{});home()};
+  const snd=async(text,img)=>{const n=Date.now();await cr.set({participants:[U.uid,o],last:img?'📷 Photo':text,lastTs:n,lastFrom:U.uid,lastSt:1,['typing_'+U.uid]:false},{merge:true});await mr.add({from:U.uid,text:text||'',img:img||'',ts:n,status:1,deleted:false})};
+  const go=()=>{const t=$('#mi').value.trim();if(!t)return;$('#mi').value='';snd(t).catch(e=>alert(e.message))};
+  $('#sd').onclick=go;$('#mi').onkeydown=e=>{if(e.key=='Enter')go()};
+  $('#mi').oninput=()=>{if(P.hideTyping)return;cr.set({['typing_'+U.uid]:true},{merge:true}).catch(()=>{});clearTimeout(tt);tt=setTimeout(()=>cr.set({['typing_'+U.uid]:false},{merge:true}).catch(()=>{}),2000)};
+  $('#em').onclick=()=>sheet('Emoji',[['😀 😂 😍 😎 🥳 😭 👍 🙏 🔥 ❤️ 🎉 💯 🤝 😴 🤔',()=>{}]].concat('😀😂😍😎🥳😭👍🙏🔥❤️'.match(/./gu).map(e=>[e,()=>$('#mi').value+=e])));
+  $('#at').onclick=()=>$('#fi').click();
+  $('#fi').onchange=e=>{const f=e.target.files[0];if(!f)return;const i=new Image();i.onload=()=>{const k=Math.min(1,900/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);snd('',c.toDataURL('image/jpeg',.6)).catch(e=>alert(e.message))};i.src=URL.createObjectURL(f)};
+  $('#cm').onclick=()=>sheet(od.name,[['🎨 Wallpaper',()=>sheet('Wallpaper',[['Black',()=>wp(id,'#000')],['Midnight',()=>wp(id,'linear-gradient(#0a0f1f,#000)')],['Forest',()=>wp(id,'linear-gradient(#06231a,#000)')],['Wine',()=>wp(id,'linear-gradient(#2a0a14,#000)')]])]]);
+  const ms=$('#ms');let t2;ms.addEventListener('pointerdown',e=>{const b=e.target.closest('.b');if(!b||b.dataset.me!='1')return;t2=setTimeout(()=>sheet('Message',[['🗑 Delete for everyone',()=>mr.doc(b.dataset.id).update({deleted:true})]]),520)});['pointerup','pointerleave','pointercancel','scroll'].forEach(v=>ms.addEventListener(v,()=>clearTimeout(t2)))}
+function wp(id,v){L.wp[id]=v;sv();$('#ms').style.background=v}
+function paint(docs){const m=$('#ms');if(!m)return;m.innerHTML=docs.map(d=>{const x=d.data(),me=x.from==U.uid;let t=esc(x.text||'');const keep=!x.deleted||(!me&&P.antiDelete);
+  if(x.deleted)t=keep?'🚫 Deleted: '+t:'🚫 This message was deleted';
+  return `<div class="b ${me?'o':'i'}" data-id="${d.id}" data-me="${me?1:0}">${x.img&&keep?`<img src="${esc(x.img)}">`:''}${t}<small>${new Date(x.ts).toTimeString().slice(0,5)}${me?` <span class="${x.status==3?'bl':''}">${x.status==1?'✓':'✓✓'}</span>`:''}</small></div>`}).join('');m.scrollTop=1e9}
+
+// ---- Settings ----
+const TG=[['hideOnline','Hide online'],['freezeSeen','Freeze last seen'],['hideTyping','Hide typing…'],['hideBlue','Hide blue ticks'],['antiDelete','Anti-delete messages']];
+function settings(){unsubs();app.innerHTML=`<header><b id="bk">←</b><span class="t">Settings</span></header><div class="list"><div class="sec">Privacy</div>${TG.map(t=>`<div class="opt" data-k="${t[0]}"><span>${t[1]}</span><div class="sw ${P[t[0]]?'on':''}"></div></div>`).join('')}<div class="sec">Security (this phone)</div><div class="opt" id="ap"><span>App Lock PIN</span><span style="color:#8a8a8a">${L.appPin?'On':'Off'}</span></div><div class="opt" id="fc"><span>Fake crash on wrong PIN</span><div class="sw ${L.crash?'on':''}"></div></div><div class="sec">Account</div><div class="opt" id="lo"><span>Logout (${esc(P.phone||U.email)})</span></div><p style="padding:20px;color:#666;text-align:center;font-size:12px">Designed and developed by Shahwaiz Hassan Daheri</p></div>`;
+  $('#bk').onclick=home;
+  document.querySelectorAll('[data-k]').forEach(r=>r.onclick=()=>{const k=r.dataset.k;P[k]=!P[k];ref.set({[k]:P[k]},{merge:true});if(k=='hideOnline'&&P[k])ref.set({online:false},{merge:true});r.querySelector('.sw').classList.toggle('on',P[k])});
+  $('#ap').onclick=()=>{const p=prompt('New App Lock PIN (empty = turn off)');if(p===null)return;L.appPin=p;sv();settings()};
+  $('#fc').onclick=()=>{L.crash=L.crash?0:1;sv();settings()};$('#lo').onclick=()=>{pres(false);auth.signOut()}}
+</script></body></html>
